@@ -1,3 +1,4 @@
+import base.NewPet;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
@@ -6,11 +7,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Feature("Функциональность для взаимодействия с сущностью {питомец}")
 @Epic("Основная функциональность")
@@ -22,21 +24,36 @@ public class PetTests {
         RestAssured.baseURI = "https://petstore.swagger.io/v2";
     }
 
-
     // POST https://petstore.swagger.io/v2/pet
     // Add a new pet to the store
     @Test
     public void createNewPet() {
-        File json = new File("/Users/ruakhdt/Downloads/pet-store-autotests/src/test/resources/newPet");
+        NewPet pet = new NewPet(
+                0,
+                new NewPet.Category(0, "Dogs"),
+                "doggie",
+                List.of("https://example.com/dog.jpg"),
+                List.of(new NewPet.Tag(0, "fluffy")),
+                "available"
+        );
         Response response =
                 given()
                         .header("Content-type", "application/json")
                         .and()
-                        .body(json)
+                        .body(pet)
                         .when()
                         .post("/pet");
         response.then().assertThat().body("id", notNullValue())
                 .and()
                 .statusCode(200);
+        NewPet createdPet = response.as(NewPet.class);
+        assertNotNull(createdPet.id());
+        assertEquals(createdPet.status(), "available");
+        assertEquals(createdPet.name(), "doggie");
+        assertEquals(createdPet.photoUrls().size(), 1);
+        assertEquals(createdPet.photoUrls().get(0), "https://example.com/dog.jpg");
+        assertEquals(createdPet.category(), new NewPet.Category(0, "Dogs"));
+        assertEquals(createdPet.tags().size(), 1);
+        assertEquals(createdPet.tags().get(0), new NewPet.Tag(0, "fluffy"));
     }
 }
