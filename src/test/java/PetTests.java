@@ -7,6 +7,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -55,5 +56,61 @@ public class PetTests {
         assertEquals(createdPet.category(), new NewPet.Category(0, "Dogs"));
         assertEquals(createdPet.tags().size(), 1);
         assertEquals(createdPet.tags().get(0), new NewPet.Tag(0, "fluffy"));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    // PUT https://petstore.swagger.io/v2/pet
+    // Update an existing pet
+    @Test
+    public void updatePet() {
+        NewPet pet = new NewPet(
+                0,
+                new NewPet.Category(0, "Dogs"),
+                "doggie",
+                List.of("https://example.com/dog.jpg"),
+                List.of(new NewPet.Tag(0, "fluffy")),
+                "available"
+        );
+        Response response =
+                given()
+                        .header("Content-type", "application/json")
+                        .and()
+                        .body(pet)
+                        .when()
+                        .post("/pet");
+        response.then().assertThat().body("id", notNullValue())
+                .and()
+                .statusCode(200);
+        NewPet createdPet = response.as(NewPet.class);
+        Double idPet = createdPet.id();
+        NewPet petToUpdate = new NewPet(
+                idPet,
+                new NewPet.Category(0, "My pet"),
+                "doggy",
+                List.of("https://example.com/dog.jpg"),
+                List.of(new NewPet.Tag(0, "kus-kus")),
+                "available"
+        );
+        Response responseSecond =
+                given()
+                        .header("Content-type", "application/json")
+                        .and()
+                        .body(petToUpdate)
+                        .when()
+                        .put("/pet");
+        response.then().assertThat().body("id", notNullValue())
+                .and()
+                .statusCode(200);
+        NewPet updatedPet = responseSecond.as(NewPet.class);
+        assertNotNull(updatedPet.id());
+        assertEquals(updatedPet.id(), idPet);
+        assertEquals(updatedPet.status(), "available");
+        assertEquals(updatedPet.name(), "doggy");
+        assertEquals(updatedPet.photoUrls().size(), 1);
+        assertEquals(updatedPet.photoUrls().get(0), "https://example.com/dog.jpg");
+        assertEquals(updatedPet.category(), new NewPet.Category(0, "My pet"));
+        assertEquals(updatedPet.tags().size(), 1);
+        assertEquals(updatedPet.tags().get(0), new NewPet.Tag(0, "kus-kus"));
     }
 }
