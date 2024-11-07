@@ -3,9 +3,7 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -19,11 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Epic("Основная функциональность")
 @Story("https://docs.google.com/spreadsheets/d/1uGjFS-slTLruBczZY_8w7I5jqQ_7hMcCt-947USjzZU/edit?usp=sharing")
 @DisplayName("Тесты на функциональность питомцев")
-public class PetTests {
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = "https://petstore.swagger.io/v2";
-    }
+public class PetTests extends BaseApiTest {
 
     // POST https://petstore.swagger.io/v2/pet
     // Add a new pet to the store
