@@ -1,27 +1,31 @@
+package pet;
+
 import base.NewPet;
+import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
-import io.qameta.allure.junit4.DisplayName;
+import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Feature("Функциональность для взаимодействия с сущностью {питомец}")
-@Epic("Основная функциональность")
+@Epic("Основная функциональность - позитивные сценарии")
 @Story("https://docs.google.com/spreadsheets/d/1uGjFS-slTLruBczZY_8w7I5jqQ_7hMcCt-947USjzZU/edit?usp=sharing")
-@DisplayName("Тесты на функциональность питомцев")
-public class PetTests extends BaseApiTest {
+@org.junit.jupiter.api.DisplayName("Тесты на функциональность питомцев")
+@ExtendWith(AllureJunit5.class)
 
-    // POST https://petstore.swagger.io/v2/pet
-    // Add a new pet to the store
-    @Test
+public class PositivePetTests extends BaseApiTest {
+
+    @org.junit.jupiter.api.Test
+    @Feature("Создать питомца")
+    @Description("Add a new pet to the store POST https://petstore.swagger.io/v2/pet")
     public void createNewPet() {
         NewPet pet = new NewPet(
                 0,
@@ -42,21 +46,23 @@ public class PetTests extends BaseApiTest {
                 .and()
                 .statusCode(200);
         NewPet createdPet = response.as(NewPet.class);
-        assertNotNull(createdPet.id());
-        assertEquals(createdPet.status(), "available");
-        assertEquals(createdPet.name(), "doggie");
-        assertEquals(createdPet.photoUrls().size(), 1);
-        assertEquals(createdPet.photoUrls().get(0), "https://example.com/dog.jpg");
-        assertEquals(createdPet.category(), new NewPet.Category(0, "Dogs"));
-        assertEquals(createdPet.tags().size(), 1);
-        assertEquals(createdPet.tags().get(0), new NewPet.Tag(0, "fluffy"));
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(createdPet.id()).isNotNull();
+            softAssertions.assertThat(createdPet.status()).isEqualTo("available");
+            softAssertions.assertThat(createdPet.name()).isEqualTo("doggie");
+            softAssertions.assertThat(createdPet.photoUrls().size()).isEqualTo(1);
+            softAssertions.assertThat(createdPet.photoUrls().get(0)).isEqualTo("https://example.com/dog.jpg");
+            softAssertions.assertThat(createdPet.category()).isEqualTo(new NewPet.Category(0, "Dogs"));
+            softAssertions.assertThat(createdPet.tags().size()).isEqualTo(1);
+            softAssertions.assertThat(createdPet.tags().get(0)).isEqualTo(new NewPet.Tag(0, "fluffy"));
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
 
-    // PUT https://petstore.swagger.io/v2/pet
-    // Update an existing pet
-    @Test
+    @org.junit.jupiter.api.Test
+    @Feature("Изменить питомца")
+    @Description("Update an existing pet PUT https://petstore.swagger.io/v2/pet")
     public void updatePet() {
         NewPet pet = new NewPet(
                 0,
@@ -97,14 +103,16 @@ public class PetTests extends BaseApiTest {
                 .and()
                 .statusCode(200);
         NewPet updatedPet = responseSecond.as(NewPet.class);
-        assertNotNull(updatedPet.id());
-        assertEquals(updatedPet.id(), idPet);
-        assertEquals(updatedPet.status(), "available");
-        assertEquals(updatedPet.name(), "doggy");
-        assertEquals(updatedPet.photoUrls().size(), 1);
-        assertEquals(updatedPet.photoUrls().get(0), "https://example.com/dog.jpg");
-        assertEquals(updatedPet.category(), new NewPet.Category(0, "My pet"));
-        assertEquals(updatedPet.tags().size(), 1);
-        assertEquals(updatedPet.tags().get(0), new NewPet.Tag(0, "kus-kus"));
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(updatedPet.id()).isNotNull();
+            softAssertions.assertThat(updatedPet.id()).isEqualTo(idPet);
+            softAssertions.assertThat(updatedPet.status()).isEqualTo("available");
+            softAssertions.assertThat(updatedPet.name()).isEqualTo("doggy");
+            softAssertions.assertThat(updatedPet.photoUrls().size()).isEqualTo(1);
+            softAssertions.assertThat(updatedPet.photoUrls().get(0)).isEqualTo("https://example.com/dog.jpg");
+            softAssertions.assertThat(updatedPet.category()).isEqualTo(new NewPet.Category(0, "My pet"));
+            softAssertions.assertThat(updatedPet.tags().size()).isEqualTo(1);
+            softAssertions.assertThat(updatedPet.tags().get(0)).isEqualTo(new NewPet.Tag(0, "kus-kus"));
+        });
     }
 }

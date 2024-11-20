@@ -2,7 +2,5 @@ package step;
 
 public class BasePetStep {
 
-    public void createPet(){
-
-    }
+    public void createPet(){}
 }

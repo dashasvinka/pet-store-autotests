@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
         <aspectj.version>1.8.10</aspectj.version>
-        <allure-junit4.version>2.6.0</allure-junit4.version>
+<!--        <allure-junit4.version>2.6.0</allure-junit4.version>-->
     </properties>
 
     <dependencies>
@@ -52,9 +52,8 @@
         </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-junit4</artifactId>
-            <version>2.28.1</version>
-            <scope>test</scope>
+            <artifactId>allure-junit5</artifactId>
+            <version>2.20.1</version>
         </dependency>
         <dependency>
             <groupId>io.github.openfeign</groupId>
@@ -83,14 +82,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <testFailureIgnore>false</testFailureIgnore>
                     <argLine>-javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"</argLine>
-                    <properties>
-                        <property>
-                            <name>listener</name>
-                            <value>io.qameta.allure.junit4.AllureJunit4</value>
-                        </property>
-                    </properties>
                     <systemProperties>
                         <property>
                             <name>allure.results.directory</name>
