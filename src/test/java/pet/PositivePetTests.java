@@ -72,17 +72,8 @@ public class PositivePetTests extends BaseApiTest {
                 List.of(new NewPet.Tag(0, "fluffy")),
                 "available"
         );
-        Response response =
-                given()
-                        .header("Content-type", "application/json")
-                        .and()
-                        .body(pet)
-                        .when()
-                        .post("/pet");
-        response.then().assertThat().body("id", notNullValue())
-                .and()
-                .statusCode(200);
-        NewPet createdPet = response.as(NewPet.class);
+        HelperApiTest helperApiTest = new HelperApiTest();
+        NewPet createdPet = helperApiTest.createPetPrecondition(pet);
         Double idPet = createdPet.id();
         NewPet petToUpdate = new NewPet(
                 idPet,
@@ -99,7 +90,7 @@ public class PositivePetTests extends BaseApiTest {
                         .body(petToUpdate)
                         .when()
                         .put("/pet");
-        response.then().assertThat().body("id", notNullValue())
+        responseSecond.then().assertThat().body("id", notNullValue())
                 .and()
                 .statusCode(200);
         NewPet updatedPet = responseSecond.as(NewPet.class);
