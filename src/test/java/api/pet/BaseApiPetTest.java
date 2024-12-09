@@ -1,16 +1,25 @@
-package pet;
+package api.pet;
 
 import base.NewPet;
+import io.qameta.allure.Step;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-public class HelperApiTest {
-    
-    // В данном классе подготовительные выборочные степы для API Test //
+public class BaseApiPetTest {
 
-    public NewPet createPetPrecondition(NewPet pet) {
+    // В данном классе степы для API Test //
+
+    @BeforeEach
+    public void setUp() {
+        RestAssured.baseURI = "https://petstore.swagger.io/v2";
+    }
+
+    @Step("Создание питомца через API")
+    public static NewPet createPetPrecondition(NewPet pet) {
         Response response =
                 given()
                         .header("Content-type", "application/json")
@@ -24,3 +33,4 @@ public class HelperApiTest {
         return response.as(NewPet.class);
     }
 }
+

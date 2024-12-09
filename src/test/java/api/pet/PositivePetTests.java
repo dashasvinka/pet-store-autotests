@@ -1,14 +1,14 @@
-package pet;
+package api.pet;
 
 import base.NewPet;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
-import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -18,15 +18,15 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 @Feature("Функциональность для взаимодействия с сущностью {питомец}")
 @Epic("Основная функциональность - позитивные сценарии")
 @Story("https://docs.google.com/spreadsheets/d/1uGjFS-slTLruBczZY_8w7I5jqQ_7hMcCt-947USjzZU/edit?usp=sharing")
-@org.junit.jupiter.api.DisplayName("Тесты на функциональность питомцев")
-@ExtendWith(AllureJunit5.class)
+@DisplayName("Тесты на функциональность питомцев")
 
-public class PositivePetTests extends BaseApiTest {
+public class PositivePetTests extends BaseApiPetTest {
 
-    @org.junit.jupiter.api.Test
+    @Test
     @Feature("Создать питомца")
     @Description("Add a new pet to the store POST https://petstore.swagger.io/v2/pet")
     public void createNewPet() {
+
         NewPet pet = new NewPet(
                 0,
                 new NewPet.Category(0, "Dogs"),
@@ -60,7 +60,7 @@ public class PositivePetTests extends BaseApiTest {
 
     ///////////////////////////////////////////////////////////////////////////////////
 
-    @org.junit.jupiter.api.Test
+    @Test
     @Feature("Изменить питомца")
     @Description("Update an existing pet PUT https://petstore.swagger.io/v2/pet")
     public void updatePet() {
@@ -72,9 +72,9 @@ public class PositivePetTests extends BaseApiTest {
                 List.of(new NewPet.Tag(0, "fluffy")),
                 "available"
         );
-        HelperApiTest helperApiTest = new HelperApiTest();
-        NewPet createdPet = helperApiTest.createPetPrecondition(pet);
-        Double idPet = createdPet.id();
+
+        NewPet petPet = createPetPrecondition(pet);
+        Double idPet = petPet.id();
         NewPet petToUpdate = new NewPet(
                 idPet,
                 new NewPet.Category(0, "My pet"),

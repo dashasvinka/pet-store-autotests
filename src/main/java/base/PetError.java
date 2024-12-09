@@ -1,6 +1,6 @@
 package base;
 
-public record BaseError(
+public record PetError(
         int code,
         String type,
         String message
