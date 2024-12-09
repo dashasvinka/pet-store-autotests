@@ -11,7 +11,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 
 public class BaseApiPetTest {
 
-    // В данном классе степы для API Test //
+    // В данном классе степы для API-test сущности питомец //
 
     @BeforeEach
     public void setUp() {

@@ -1,6 +1,6 @@
 package api.pet;
 
-import base.PetError;
+import base.StatusResponse;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -29,7 +29,7 @@ public class NegativePetTests extends BaseApiPetTest {
                         .get("/pet/2345324642363203040103413");
         response.then()
                 .statusCode(404);
-        PetError errorResponse = response.as(PetError.class);
+        StatusResponse errorResponse = response.as(StatusResponse.class);
         SoftAssertions.assertSoftly(softAssertions -> {
             softAssertions.assertThat(errorResponse.code()).isEqualTo(404);
             softAssertions.assertThat(errorResponse.type()).isEqualTo("unknown");
@@ -51,7 +51,7 @@ public class NegativePetTests extends BaseApiPetTest {
                         .delete("/pet/2345324642363203040103413");
         response.then()
                 .statusCode(404);
-        PetError errorResponse = response.as(PetError.class);
+        StatusResponse errorResponse = response.as(StatusResponse.class);
 
         SoftAssertions softAssertions= new SoftAssertions();
         softAssertions.assertThat(errorResponse.code()).isEqualTo(404);
