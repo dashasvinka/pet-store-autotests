@@ -34,19 +34,59 @@ public class BaseApiUserTest {
                 .build();
     }
 
-    @Step("Создан новый пользователь")
-    public static StatusResponse createNewUserPrecondition(NewUser user) {
-        Response response =
-                given()
+    @Step("Создан новый пользователь и проверен успешный статус")
+    public static StatusResponse createNewUserSuccessPrecondition(NewUser user) {
+        Response response = postNewUser(user);
+        response.then()
+                .assertThat()
+                .statusCode(200);
+        return response.as(StatusResponse.class);
+    }
+
+    @Step("Создана коллекция пользователей и проверен успешный статус")
+    public static StatusResponse createNewUserCollectionSuccess(NewUser[] users) {
+        Response response = postNewUsersList(users);
+        response.then()
+                .assertThat()
+                .statusCode(200);
+        return response.as(StatusResponse.class);
+    }
+
+    @Step("Проверено существование пользователя по его имени")
+    public static NewUser checkUserIsExistByNameSuccess(String userName) {
+        Response response = getUserByName(userName);
+        response.then()
+                .assertThat()
+                .statusCode(200);
+        return response.as(NewUser.class);
+    }
+
+    @Step("Отправили запрос POST/user")
+    public static Response postNewUser(NewUser user) {
+         return given()
                         .header("Content-type", "application/json")
                         .and()
                         .body(user)
                         .when()
                         .post("/user");
-        response.then()
-                .assertThat()
-                .statusCode(200);
-        return response.as(StatusResponse.class);
+    }
+
+    @Step("Отправили запрос POST/user")
+    public static Response postNewUsersList(NewUser[] users) {
+        return given()
+                .header("Content-type", "application/json")
+                .and()
+                .body(users)
+                .when()
+                .post("/user/createWithList");
+    }
+
+    @Step("Отправили запрос GET/user")
+    public static Response getUserByName(String userName) {
+        return given()
+                .header("Content-type", "application/json")
+                .when()
+                .get("/user/"+userName);
     }
 
     @Step("Проверить результат создания пользователя")

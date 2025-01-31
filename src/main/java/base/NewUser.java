@@ -1,5 +1,7 @@
 package base;
 
+import io.qameta.allure.Step;
+
 public class NewUser {
 
     private final int id;
@@ -20,6 +22,19 @@ public class NewUser {
         this.password = builder.password;
         this.phone = builder.phone;
         this.userStatus = builder.userStatus;
+    }
+
+    @Step("Сформирован объекта пользователя через билдер")
+    public static NewUser.Builder createNewUser(){
+        return NewUser.builder()
+                .id(0)
+                .username("")
+                .firstName("")
+                .lastName("")
+                .email("")
+                .password("")
+                .phone("")
+                .userStatus(0);
     }
 
     public static class Builder {
