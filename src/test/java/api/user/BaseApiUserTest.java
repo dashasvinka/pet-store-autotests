@@ -61,6 +61,30 @@ public class BaseApiUserTest {
         return response.as(NewUser.class);
     }
 
+    @Step("Проверено существование пользователя по его имени")
+    public void checkUserIsExistByName(String userName) {
+        Response response = getUserByName(userName);
+        response.then()
+                .assertThat()
+                .statusCode(200);
+    }
+
+    @Step("Проверено удаление пользователя по его имени")
+    public void deleteUserIsExistByName(String userName) {
+        Response response = deleteUserByName(userName);
+        response.then()
+                .assertThat()
+                .statusCode(200);
+    }
+
+    @Step("Проверено отсутствие пользователя по его имени")
+    public void checkUserIsNotExistByName(String userName) {
+        Response response = getUserByName(userName);
+        response.then()
+                .assertThat()
+                .statusCode(404);
+    }
+
     @Step("Отправили запрос POST/user")
     public static Response postNewUser(NewUser user) {
          return given()
@@ -87,6 +111,14 @@ public class BaseApiUserTest {
                 .header("Content-type", "application/json")
                 .when()
                 .get("/user/"+userName);
+    }
+
+    @Step("Отправили запрос DELETE/user")
+    public static Response deleteUserByName(String userName) {
+        return given()
+                .header("Content-type", "application/json")
+                .when()
+                .delete("/user/"+userName);
     }
 
     @Step("Проверить результат создания пользователя")
